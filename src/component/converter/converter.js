@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import style from "./converter.module.css";
 
 export default function Converter({ numberСurrency }) {
@@ -7,34 +7,31 @@ export default function Converter({ numberСurrency }) {
   const [nameCurrency, setNameCarrency] = useState("UAH");
   const [nameTargetCurrency, setNameTargetCurrency] = useState("USD");
 
-  function calculateSource(e) {
-    const value = e.target.value;
+  useEffect(() => {
+    calculateTarget(sourceValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nameCurrency]);
+
+  useEffect(() => {
+    calculateSource(targetValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nameTargetCurrency]);
+
+  const calculateTarget = (numberInput) => {
     const calculation = (
-      (value / numberСurrency[nameCurrency]) *
+      (numberInput / numberСurrency[nameCurrency]) *
       numberСurrency[nameTargetCurrency]
     ).toFixed(2);
-    setSourceValue(value);
     setTargetValue(calculation);
-  }
+  };
 
-  function calculateTarget(e) {
-    const value = e.target.value;
+  const calculateSource = (numberInput) => {
     const calculation = (
-      (value / numberСurrency[nameTargetCurrency]) *
+      (numberInput / numberСurrency[nameTargetCurrency]) *
       numberСurrency[nameCurrency]
     ).toFixed(2);
     setSourceValue(calculation);
-    setTargetValue(value);
-  }
-
-  function currentСurrency(e) {
-    const currentСurrency = e.target.value;
-    setNameCarrency(currentСurrency);
-  }
-  function nameCurrentСurrency(e) {
-    const currentСurrency = e.target.value;
-    setNameTargetCurrency(currentСurrency);
-  }
+  };
 
   return (
     <>
@@ -44,9 +41,17 @@ export default function Converter({ numberСurrency }) {
             className={style.input}
             type="number"
             value={sourceValue}
-            onChange={calculateSource}
+            onChange={(e) => {
+              setSourceValue(e.target.value);
+              calculateTarget(e.target.value);
+            }}
           />
-          <select className={style.select} onClick={currentСurrency}>
+          <select
+            className={style.select}
+            onChange={(e) => {
+              setNameCarrency(e.target.value);
+            }}
+          >
             <option value="UAH">UAH</option>
             <option value="EUR">EUR</option>
             <option value="USD">USD</option>
@@ -57,9 +62,17 @@ export default function Converter({ numberСurrency }) {
             className={style.input}
             type="number"
             value={targetValue}
-            onChange={calculateTarget}
+            onChange={(e) => {
+              setTargetValue(e.target.value);
+              calculateSource(e.target.value);
+            }}
           />
-          <select className={style.select} onClick={nameCurrentСurrency}>
+          <select
+            className={style.select}
+            onChange={(e) => {
+              setNameTargetCurrency(e.target.value);
+            }}
+          >
             <option value="USD">USD</option>
             <option value="UAH">UAH</option>
             <option value="EUR">EUR</option>
