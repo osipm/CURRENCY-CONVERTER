@@ -9,12 +9,10 @@ export default function Converter({ numberСurrency }) {
 
   useEffect(() => {
     calculateTarget(sourceValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nameCurrency]);
 
   useEffect(() => {
     calculateSource(targetValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nameTargetCurrency]);
 
   const calculateTarget = (numberInput) => {
